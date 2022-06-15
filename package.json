@@ -12,9 +12,9 @@
   "dependencies": {
     "@middy/core": "^2.5.3",
     "@middy/http-json-body-parser": "^2.5.3",
-    "chrome-aws-lambda": "^10.1.0",
-    "puppeteer": "^14.4.0",
-    "puppeteer-core": "^14.4.0"
+    "chrome-aws-lambda": "10.0.0",
+    "puppeteer": "10.1.0",
+    "puppeteer-core": "10.1.0"
   },
   "devDependencies": {
     "@serverless/typescript": "^3.0.0",
