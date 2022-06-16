@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react"
-import { Box, Flex, Image, Text } from "rebass"
+import { Box, Flex, Text } from "rebass"
 import { SearchBar, YarnCard } from "./components"
 import { Backend, YarnResult } from "./services"
 export const App: React.FC = () => {
