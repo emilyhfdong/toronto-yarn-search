@@ -68,6 +68,9 @@ export const SearchBar: React.FC<SearchBarProps> = ({
           transition: "all 0.1s ease-in",
           position: "relative",
           justifyContent: "space-between",
+          isolation: "isolate",
+          WebkitMaskImage: "-webkit-radial-gradient(white, black);",
+          willChange: "transform",
         }}
       >
         <Box
@@ -97,8 +100,9 @@ export const SearchBar: React.FC<SearchBarProps> = ({
           value={searchTerm}
           as="input"
           onKeyUp={(e) => {
-            if (e.key === "Enter") {
+            if (e.key === "Enter" && searchTerm) {
               onSubmit()
+              inputRef.current?.blur()
             }
           }}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -112,7 +116,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
             height: "100%",
             fontSize: isMinimized ? [20, 20] : [25, 30],
             fontFamily: "Josefin Sans",
-            marginLeft: 10,
+            marginLeft: [0, 10],
             transition: "all 0.1s ease-in",
             backgroundColor: "transparent",
           }}

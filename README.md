@@ -1,6 +1,6 @@
 # Toronto yarn search
 
-https://tbr-books.netlify.app
+https://torontoyarns.netlify.app
 
 ## Description
 

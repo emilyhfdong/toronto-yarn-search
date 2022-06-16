@@ -70,7 +70,7 @@ export const App: React.FC = () => {
         <Text
           sx={{
             fontSize: yarns ? [50, 50] : [50, 80],
-            fontWeight: "bold",
+            fontWeight: "600",
             transition: "all 0.2s ease-in",
           }}
         >
