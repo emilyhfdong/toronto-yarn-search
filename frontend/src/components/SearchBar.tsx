@@ -85,7 +85,6 @@ export const SearchBar: React.FC<SearchBarProps> = ({
             left: "0%",
             animation: isLoading ? "load 3s linear infinite" : "",
             opacity: isLoading ? 0.8 : 0,
-            transition: "opacity 1s",
           }}
         ></Box>
         <Image
