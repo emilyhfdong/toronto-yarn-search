@@ -1,10 +1,25 @@
-import React from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { Flex, Text, Box } from "rebass"
 import { YarnResult } from "../services"
 
 type YarnCardProps = { yarn: YarnResult }
 
 export const YarnCard: React.FC<YarnCardProps> = ({ yarn }) => {
+  const imgRef = useRef<HTMLDivElement>(null)
+  const [height, setHeight] = useState(0)
+
+  useEffect(() => {
+    const updateHeight = () => {
+      if (imgRef.current) {
+        setHeight(imgRef.current.getBoundingClientRect().width)
+      }
+    }
+    updateHeight()
+
+    window.addEventListener("resize", updateHeight)
+    return () => window.removeEventListener("resize", updateHeight)
+  }, [])
+
   return (
     <Flex
       as="a"
@@ -13,8 +28,8 @@ export const YarnCard: React.FC<YarnCardProps> = ({ yarn }) => {
       sx={{
         position: "relative",
         flexDirection: "column",
-        width: 200,
-        marginBottom: 25,
+        width: "100%",
+        marginBottom: ["1rem", 25],
         cursor: "pointer",
         textDecoration: "none",
         ":hover": {
@@ -41,9 +56,9 @@ export const YarnCard: React.FC<YarnCardProps> = ({ yarn }) => {
         <Text sx={{ fontSize: 12 }}>{yarn.store}</Text>
       </Flex>
       <Box
+        ref={imgRef}
         sx={{
-          height: 200,
-          width: 200,
+          height,
           border: "3px solid black",
           borderRadius: 20,
           backgroundImage: `url(${yarn.img})`,

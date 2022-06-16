@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import { Box, Flex, Image, Text } from "rebass"
 import { SearchBar, YarnCard } from "./components"
 import { Backend, YarnResult } from "./services"
@@ -15,14 +15,18 @@ export const App: React.FC = () => {
     setIsLoading(true)
     try {
       const result = await Backend.searchYarns(searchTerm)
-      if (result.length) {
-        setYarns(result)
-      }
+      setYarns(result)
     } catch (e) {
       setHasError(true)
     }
     setIsLoading(false)
   }, [isLoading, searchTerm])
+
+  useEffect(() => {
+    if (hasError) {
+      setTimeout(() => setHasError(false), 2000)
+    }
+  }, [hasError])
 
   return (
     <Flex
@@ -30,10 +34,25 @@ export const App: React.FC = () => {
         width: "100vw",
         height: "100vh",
         alignItems: "center",
-        paddingX: 30,
+        paddingX: ["1rem", 30],
         flexDirection: "column",
       }}
     >
+      <Box
+        sx={{
+          position: "absolute",
+          top: "3rem",
+          paddingY: "1rem",
+          paddingX: "2rem",
+          backgroundColor: "#B64E4B",
+          color: "white",
+          borderRadius: "0.5rem",
+          opacity: hasError ? 1 : 0,
+          transition: "opacity 0.5s",
+        }}
+      >
+        oops! something went wrong :( try again
+      </Box>
       <Flex
         sx={{
           minHeight: yarns ? 0 : "100vh",
@@ -66,22 +85,45 @@ export const App: React.FC = () => {
           clearYarns={() => setYarns(null)}
         />
       </Flex>
-
-      <Flex
+      {yarns && yarns.length === 0 && (
+        <Flex
+          sx={{
+            maxWidth: "100%",
+            width: 900,
+            marginTop: ["2rem", 30],
+            opacity: yarns ? 1 : 0,
+            transition: "opacity 0.2s ease-in 0.3s",
+            justifyContent: "center",
+            alignItems: "center",
+            flex: 1,
+          }}
+        >
+          <Text sx={{ fontSize: 20, textAlign: "center" }}>
+            😭 no results! <br />
+            try searching something else
+          </Text>
+        </Flex>
+      )}
+      <Box
         sx={{
           maxWidth: "100%",
           width: 900,
-          marginTop: 30,
+          marginTop: ["2rem", 30],
           opacity: yarns ? 1 : 0,
           transition: "opacity 0.2s ease-in 0.3s",
-          flexWrap: "wrap",
-          justifyContent: "space-between",
+          display: "grid",
+          gridTemplateColumns: [
+            "repeat(2, 1fr)",
+            "repeat(3, 1fr)",
+            "repeat(4, 1fr)",
+          ],
+          columnGap: ["1rem", "1.5rem"],
         }}
       >
         {yarns?.map((yarn) => (
           <YarnCard yarn={yarn} />
         ))}
-      </Flex>
+      </Box>
     </Flex>
   )
 }

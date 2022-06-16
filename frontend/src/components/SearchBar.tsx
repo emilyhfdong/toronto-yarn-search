@@ -38,6 +38,10 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   }, [isLoading])
 
   useEffect(() => {
+    inputRef.current?.focus()
+  }, [])
+
+  useEffect(() => {
     let interval: NodeJS.Timer
     if (isLoading) {
       interval = setInterval(() => {
