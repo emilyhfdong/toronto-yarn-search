@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react"
 import { Box, Flex, Text } from "rebass"
 import { SearchBar, YarnCard } from "./components"
-import { Backend, YarnResult } from "./services"
+import { Backend, YarnResult } from "./backend"
+
 export const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
