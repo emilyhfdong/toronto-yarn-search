@@ -2,7 +2,7 @@ import { handlerPath } from "@libs/handler-resolver"
 
 export default {
   handler: `${handlerPath(__dirname)}/handler.main`,
-  timeout: 20,
+  timeout: 30,
   events: [
     {
       httpApi: {
