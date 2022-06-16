@@ -10,6 +10,7 @@ import {
   searchKnitomatic,
   searchKnittingLoft,
   searchRomni,
+  YarnResult,
 } from "./utils"
 
 const searchYarns: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
@@ -28,13 +29,27 @@ const searchYarns: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
     searchKnitomatic(...args),
   ])
 
+  const longestStore = Math.max(
+    eweknit.length,
+    knittingLoft.length,
+    romni.length,
+    knitomatic.length
+  )
+
+  const allYarns: YarnResult[] = new Array(longestStore)
+    .fill(0)
+    .reduce((acc, _, i) => {
+      return [
+        ...acc,
+        ...(eweknit[i] ? [eweknit[i]] : []),
+        ...(knittingLoft[i] ? [knittingLoft[i]] : []),
+        ...(romni[i] ? [romni[i]] : []),
+        ...(knitomatic[i] ? [knitomatic[i]] : []),
+      ]
+    }, [])
+
   return formatJSONResponse({
-    result: [
-      ...eweknit.map((yarn) => ({ ...yarn, store: "eweknit" })),
-      ...knittingLoft.map((yarn) => ({ ...yarn, store: "knitting loft" })),
-      ...romni.map((yarn) => ({ ...yarn, store: "romni" })),
-      ...knitomatic.map((yarn) => ({ ...yarn, store: "knitomatic" })),
-    ],
+    result: allYarns,
   })
 }
 

@@ -1,10 +1,30 @@
 import { Browser, ElementHandle } from "puppeteer-core"
 
+export type YarnResult = {
+  name: string
+  href: string
+  price?: string
+  img: string
+  store: string
+}
+
+const getFilteredYarns = (yarns: YarnResult[]) => {
+  return yarns.filter(
+    (yarn) =>
+      !yarn.name.toLowerCase().includes("kit") &&
+      !yarn.name.toLowerCase().includes("sweater") &&
+      !yarn.name.toLowerCase().includes("project")
+  )
+}
+
+const getUrl = (baseUrl: string, searchTerm: string) =>
+  baseUrl + "/search?type=product&q=" + searchTerm.split(" ").join("+")
+
 export const searchEweKnit = async (browser: Browser, searchTerm: string) => {
   const baseUrl = "https://eweknit.co"
   const page = await browser.newPage()
 
-  await page.goto(baseUrl + "/search?q=" + searchTerm.split(" ").join("+"))
+  await page.goto(getUrl(baseUrl, searchTerm))
 
   const yarns = await page.$$(".search-result")
 
@@ -19,6 +39,7 @@ export const searchEweKnit = async (browser: Browser, searchTerm: string) => {
         img:
           "https:" +
           node.querySelector(".search-result-image img").getAttribute("src"),
+        store: "eweknit",
       }),
       [baseUrl]
     )
@@ -28,7 +49,7 @@ export const searchEweKnit = async (browser: Browser, searchTerm: string) => {
 
   await page.close()
 
-  return yarnProperties
+  return getFilteredYarns(yarnProperties)
 }
 
 export const searchKnittingLoft = async (
@@ -38,9 +59,7 @@ export const searchKnittingLoft = async (
   const baseUrl = "https://theknittingloft.ca"
   const page = await browser.newPage()
 
-  await page.goto(
-    baseUrl + "/search?type=product&q=" + searchTerm.split(" ").join("+")
-  )
+  await page.goto(getUrl(baseUrl, searchTerm))
 
   const yarns = await page.$$(".product-index")
 
@@ -58,6 +77,7 @@ export const searchKnittingLoft = async (
             node
               .querySelector(".collection-image noscript")
               .innerHTML.split('"')[1],
+          store: "knitting loft",
         }
       },
       [baseUrl]
@@ -68,16 +88,14 @@ export const searchKnittingLoft = async (
 
   await page.close()
 
-  return yarnProperties
+  return getFilteredYarns(yarnProperties)
 }
 
 export const searchRomni = async (browser: Browser, searchTerm: string) => {
   const baseUrl = "https://www.romniwools.ca"
   const page = await browser.newPage()
 
-  await page.goto(
-    baseUrl + "/search?type=product&q=" + searchTerm.split(" ").join("+")
-  )
+  await page.goto(getUrl(baseUrl, searchTerm))
 
   const yarns = await page.$$(".product-card")
 
@@ -92,6 +110,7 @@ export const searchRomni = async (browser: Browser, searchTerm: string) => {
         img:
           "https:" +
           node.querySelector(".list-view-item__image").getAttribute("src"),
+        store: "romni",
       }),
       [baseUrl]
     )
@@ -101,7 +120,7 @@ export const searchRomni = async (browser: Browser, searchTerm: string) => {
 
   await page.close()
 
-  return yarnProperties
+  return getFilteredYarns(yarnProperties)
 }
 
 export const searchKnitomatic = async (
@@ -111,7 +130,7 @@ export const searchKnitomatic = async (
   const baseUrl = "https://knitomatic.com"
   const page = await browser.newPage()
 
-  await page.goto(baseUrl + "/search?q=" + searchTerm.split(" ").join("+"))
+  await page.goto(getUrl(baseUrl, searchTerm))
 
   const yarns = await page.$$(".row.results")
 
@@ -127,6 +146,7 @@ export const searchKnitomatic = async (
             .querySelector(".thumbnail img")
             .getAttribute("src")
             .replace("small", "large"),
+        store: "knitomatic",
       }),
       [baseUrl]
     )
@@ -135,7 +155,5 @@ export const searchKnitomatic = async (
 
   await page.close()
 
-  return yarnProperties.filter(
-    (yarn) => !yarn.name.toLowerCase().includes("project")
-  )
+  return getFilteredYarns(yarnProperties)
 }
