@@ -21,7 +21,7 @@ const searchYarns: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
 
   const args: [Browser, string] = [browser, event.body.searchTerm]
 
-  const [eweKnit, knittingLoft, romni, knitomatic] = await Promise.all([
+  const [eweknit, knittingLoft, romni, knitomatic] = await Promise.all([
     searchEweKnit(...args),
     searchKnittingLoft(...args),
     searchRomni(...args),
@@ -30,10 +30,10 @@ const searchYarns: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
 
   return formatJSONResponse({
     result: [
-      { store: "eweKnit", yarns: eweKnit },
-      { store: "knittingLoft", yarns: knittingLoft },
-      { store: "romni", yarns: romni },
-      { store: "knitomatic", yarns: knitomatic },
+      ...eweknit.map((yarn) => ({ ...yarn, store: "eweknit" })),
+      ...knittingLoft.map((yarn) => ({ ...yarn, store: "knitting loft" })),
+      ...romni.map((yarn) => ({ ...yarn, store: "romni" })),
+      ...knitomatic.map((yarn) => ({ ...yarn, store: "knitomatic" })),
     ],
   })
 }

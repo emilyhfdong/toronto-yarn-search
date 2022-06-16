@@ -15,7 +15,10 @@ export const searchEweKnit = async (browser: Browser, searchTerm: string) => {
         href:
           baseUrl +
           node.querySelector(".search-result-details a").getAttribute("href"),
-        price: node.querySelector(".money").innerHTML.replace(" CAD", ""),
+        price: node.querySelector(".money").innerHTML,
+        img:
+          "https:" +
+          node.querySelector(".search-result-image img").getAttribute("src"),
       }),
       [baseUrl]
     )
@@ -41,15 +44,22 @@ export const searchKnittingLoft = async (
 
   const yarns = await page.$$(".product-index")
 
-  const getYarnProperties = (element: ElementHandle<Element>) => {
+  const getYarnProperties = async (element: ElementHandle<Element>) => {
     return element.evaluate(
-      (node, baseUrl) => ({
-        name: node.querySelector(".product-details h3").innerHTML,
-        href:
-          baseUrl +
-          node.querySelector(".product-details a").getAttribute("href"),
-        price: node.querySelector(".money").innerHTML,
-      }),
+      (node, baseUrl) => {
+        return {
+          name: node.querySelector(".product-details h3").innerHTML,
+          href:
+            baseUrl +
+            node.querySelector(".product-details a").getAttribute("href"),
+          price: node.querySelector(".money").innerHTML,
+          img:
+            "https:" +
+            node
+              .querySelector(".collection-image noscript")
+              .innerHTML.split('"')[1],
+        }
+      },
       [baseUrl]
     )
   }
@@ -79,6 +89,9 @@ export const searchRomni = async (browser: Browser, searchTerm: string) => {
         price: node
           .querySelector("span.price-item")
           .innerHTML.replace("\n", ""),
+        img:
+          "https:" +
+          node.querySelector(".list-view-item__image").getAttribute("src"),
       }),
       [baseUrl]
     )
@@ -100,18 +113,24 @@ export const searchKnitomatic = async (
 
   await page.goto(baseUrl + "/search?q=" + searchTerm.split(" ").join("+"))
 
-  const yarns = await page.$$(".search-result")
+  const yarns = await page.$$(".row.results")
 
   const getYarnProperties = (element: ElementHandle<Element>) => {
     return element.evaluate(
       (node, baseUrl) => ({
-        name: node.querySelector("a").innerText,
-        href: baseUrl + node.querySelector("a").getAttribute("href"),
+        name: (node.querySelector(".search-result a") as HTMLElement).innerText,
+        href:
+          baseUrl + node.querySelector(".search-result a").getAttribute("href"),
+        img:
+          "https:" +
+          node
+            .querySelector(".thumbnail img")
+            .getAttribute("src")
+            .replace("small", "large"),
       }),
       [baseUrl]
     )
   }
-
   const yarnProperties = await Promise.all(yarns.map(getYarnProperties))
 
   await page.close()
